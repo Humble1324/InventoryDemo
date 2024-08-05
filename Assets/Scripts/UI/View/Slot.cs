@@ -5,6 +5,7 @@ using Controller;
 using Tools;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using View;
 
 /// <summary>
@@ -13,25 +14,25 @@ using View;
 public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     public GameObject itemPrefab;
-    public ItemView _itemView;
+    public ItemView ItemView { get; private set; }
 
-    public string ItemID => _itemView != null ? _itemView.item.id : "";
+    public string ItemID => ItemView != null ? ItemView.item.id : "";
 
-    public int ItemCapacity => _itemView != null ? _itemView.item.capacity:-1;
+    public int ItemCapacity => ItemView != null ? ItemView.item.capacity : -1;
 
     public bool hasItem { get; private set; }
 
     public void PutItem(Item item, int count = 1)
     {
         //print("On PutItem" + item.name);
-        if (_itemView == null)
+        if (ItemView == null)
         {
             var itemObj = Instantiate(itemPrefab, transform);
-            _itemView = itemObj.GetComponent<ItemView>();
+            ItemView = itemObj.GetComponent<ItemView>();
         }
 
-        _itemView.item = item;
-        _itemView.Count=count;
+        ItemView.item = item;
+        ItemView.Count = count;
         hasItem = true;
         UpdateItem();
     }
@@ -43,44 +44,42 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void ClearItem()
     {
-        if (_itemView)
+        if (ItemView)
         {
-            _itemView.item = null;
             hasItem = false;
-            _itemView.Count=0;
-            _itemView.SetPos(Vector3.zero);
+            ItemView.Clear();
+            ItemView.SetPos(Vector3.zero);
         }
     }
 
     private void UpdateItem()
     {
-        if (_itemView && _itemView.item.sprite != null)
+        if (ItemView && ItemView.item.sprite != null)
         {
-            InventoryController.Instance.ShowImg(_itemView.item.sprite, SetImg);
+            InventoryController.Instance.ShowImg(ItemView.item.sprite, SetImg);
         }
     }
 
     private void SetImg(Sprite img)
     {
-        if (_itemView && _itemView.item != null)
+        if (ItemView && ItemView.item != null)
         {
-            _itemView.SetImg(img);
+            ItemView.sprite = img;
         }
     }
 
 
-    
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!_itemView)
+        if (ItemView is null || !InventoryController.Instance.onPick)
             return;
-        //print(_itemView.item.description);
-        InventoryController.Instance.ShowToolTip(_itemView.item.description);
+        //print(itemView.item.description);
+        InventoryController.Instance.ShowToolTip(ItemView.item.description);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!_itemView)
+        if (ItemView is null)
             return;
         InventoryController.Instance.HideToolTip();
         //  throw new System.NotImplementedException();
@@ -88,19 +87,37 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!_itemView)
-            return;
-        if (InventoryController.Instance && InventoryController.Instance.onPick == false)
+        print("OnPointerDown");
+        var invCtr = InventoryController.Instance;
+        if (invCtr is null)
         {
-            InventoryController.Instance.PickItem(_itemView.item);
+            return;
         }
+
+        if (invCtr.onPick == false && ItemView)
+        {
+            if (invCtr.PickItem(ItemView))
+            {
+                Release();
+            }
+        }
+        else if (invCtr.onPick && ItemView is null)
+        {
+            PutItem(invCtr.PutItem(out var count).item, count);
+        }
+        else if (invCtr.onPick && ItemView)
+        {
+            ItemView.ExchangeItem(invCtr.OnPickItemView);
+        }
+
+
         //  throw new System.NotImplementedException();
     }
 
     private void Release()
     {
         hasItem = false;
-        _itemView = null;
+        ItemView = null;
         for (int i = 0; i < transform.childCount; i++)
         {
             DestroyImmediate(transform.GetChild(i).gameObject);

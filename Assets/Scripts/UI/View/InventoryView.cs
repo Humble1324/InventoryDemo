@@ -105,11 +105,6 @@ namespace View
         }
 
 
-        public void UpdateItem(string itemSpritePath)
-        {
-            _inventoryController.UpdateItems();
-        }
-
         private Slot FindEmptySlot(out int index)
         {
             index = -1;
@@ -145,7 +140,7 @@ namespace View
             var temp = new List<Slot>();
             foreach (var slot in _slots)
             {
-                if (slot._itemView != null)
+                if (slot.ItemView != null)
                 {
                     temp.Add(slot);
                 }
@@ -153,22 +148,27 @@ namespace View
 
             // 创建一个新的列表来存储排序后的 ItemView
             var sortedItemViews = isAsc
-                ? temp.Select(slot => slot._itemView)
+                ? temp.Select(slot => slot.ItemView)
                     .OrderBy(itemView => itemView.item.name)
                     .ToList()
-                : temp.Select(slot => slot._itemView)
+                : temp.Select(slot => slot.ItemView)
                     .OrderByDescending(itemView => itemView.item.name)
                     .ToList();
+            foreach (var slot in _slots)
+            {
+                slot.ClearItem();
+            }
+
             var t = new List<ItemCopy>();
             foreach (var sortedItemView in sortedItemViews)
             {
                 t.Add(new ItemCopy(sortedItemView.sprite, sortedItemView.Count, sortedItemView.item));
             }
-            
+
             for (int i = 0; i < temp.Count; i++)
             {
                 // Check if item in temp[i] matches te mpItemView
-                temp[i]._itemView.PutItem(t[i].copyItem, t[i].copySprite, t[i].copyCount);
+                _slots[i].PutItem(t[i].copyItem, _itemDic[t[i].copyItem]);
             }
         }
 
@@ -177,7 +177,7 @@ namespace View
             var temp = new List<Slot>();
             foreach (var slot in _slots)
             {
-                if (slot._itemView != null)
+                if (slot.hasItem)
                 {
                     temp.Add(slot);
                 }
@@ -185,22 +185,27 @@ namespace View
 
             // 创建一个新的列表来存储排序后的 ItemView
             var sortedItemViews = isAsc
-                ? temp.Select(slot => slot._itemView)
+                ? temp.Select(slot => slot.ItemView)
                     .OrderBy(itemView => itemView.item.capacity)
                     .ToList()
-                : temp.Select(slot => slot._itemView)
+                : temp.Select(slot => slot.ItemView)
                     .OrderByDescending(itemView => itemView.item.capacity)
                     .ToList();
+            foreach (var slot in _slots)
+            {
+                slot.ClearItem();
+            }
+
             var t = new List<ItemCopy>();
             foreach (var sortedItemView in sortedItemViews)
             {
                 t.Add(new ItemCopy(sortedItemView.sprite, sortedItemView.Count, sortedItemView.item));
             }
-            
+
             for (int i = 0; i < temp.Count; i++)
             {
                 // Check if item in temp[i] matches te mpItemView
-                temp[i]._itemView.PutItem(t[i].copyItem, t[i].copySprite, t[i].copyCount);
+                _slots[i].PutItem(t[i].copyItem, _itemDic[t[i].copyItem]);
             }
         }
 

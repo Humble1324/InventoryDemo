@@ -16,9 +16,16 @@ namespace Controller
         public Action<string> showToolTip;
         public Action hideToolTip;
 
-        public Action<Item> pickItem;
-        public Action putItem;
+        public Action<ItemView, int> pickItemAction;
+        public Action<int> putItemAction;
         private Dictionary<string, Sprite> _spriteCache = new(15);
+
+        /// <summary>
+        /// 之后要加限定,很多判定要不在onPick才可以执行
+        /// </summary>
+        public bool onPick { get; private set; }
+
+        public ItemView OnPickItemView { get; private set; }
 
         public override void Awake()
         {
@@ -128,22 +135,27 @@ namespace Controller
 
         #region View调用显示
 
-        public bool onPick { get; private set; }
-
-        public void PickItem(Item item)
+        public bool PickItem(ItemView itemView)
         {
-            if (onPick)
+            if (onPick == true)
             {
-                return;
+                return false;
             }
 
-            pickItem?.Invoke(item);
+            onPick = true;
+            OnPickItemView = itemView;
+            //print($"PickItem{item.name}");
+            pickItemAction?.Invoke(OnPickItemView, _pim.Items[OnPickItemView.item]);
+            return pickItemAction != null;
         }
 
-        public void PutItem()
+        public ItemView PutItem(out int count)
         {
-            putItem?.Invoke();
             onPick = false;
+            count = -1;
+            count = _pim.Items[OnPickItemView.item];
+            putItemAction?.Invoke(count);
+            return OnPickItemView;
         }
 
         public void ShowToolTip(string text)

@@ -49,8 +49,11 @@ public class ItemView : MonoBehaviour
 
     public void Init()
     {
-        SetImg(null);
-        SetCount(0);
+        Clear();
+        if (_text)
+        {
+            _text.raycastTarget = false;
+        }
     }
 
     public void PutItem(Item newItem, Sprite image, int count)
@@ -71,6 +74,13 @@ public class ItemView : MonoBehaviour
         changeItemView.Count = temp._count;
     }
 
+    public void Clear()
+    {
+        SetCount(0);
+        SetPos(Vector3.zero);
+        SetImg(null);
+        item = null;
+    }
 
     /// <summary>
     /// UI文字方法
@@ -83,7 +93,7 @@ public class ItemView : MonoBehaviour
             return;
         }
 
-        _text.text = num.ToString();
+        _text.text = num == 0 ? "" : num.ToString();
     }
 
     /// <summary>
@@ -130,6 +140,7 @@ public class ItemCopy
     public Sprite copySprite;
     public int copyCount;
     public Item copyItem;
+
     public ItemCopy(Sprite sprite, int count, Item item)
     {
         copySprite = sprite;
