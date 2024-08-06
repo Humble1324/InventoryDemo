@@ -38,12 +38,10 @@ public class CatchItemView : BaseView
 
     public override void AfterShow()
     {
-        if (_inventoryController)
-        {
-            _inventoryController.pickItemAction += OnPickItem;
-            _inventoryController.putItemAction += PutItem;
-            //print("++==");
-        }
+        if (!_inventoryController) return;
+        _inventoryController.pickItemAction += OnPickItem;
+        _inventoryController.putItemAction += PutItem;
+        //print("++==");
     }
 
     private void SetPos(Vector3 pos)
@@ -53,21 +51,18 @@ public class CatchItemView : BaseView
 
     public override void AfterHide()
     {
-        if (_inventoryController)
-        {
-            _inventoryController.pickItemAction -= OnPickItem;
-            _inventoryController.putItemAction -= PutItem;
-        }
+        if (!_inventoryController) return;
+        _inventoryController.pickItemAction -= OnPickItem;
+        _inventoryController.putItemAction -= PutItem;
     }
 
-    private void OnPickItem(ItemView item, int count)
+    private void OnPickItem(ItemCopy itemCopy, int count)
     {
-        print("OnPick Item" + item.name);
-        _itemView = item;
+        print("OnPick Item" + itemCopy.copyItem.name);
         if (_itemView == null || _inventoryController == null) return;
-        _itemView.item = new Item(item.item);
         _itemView.Count = count;
-        _inventoryController.ShowImg(_itemView.item.sprite, GetImg);
+        _itemView.sprite = itemCopy.copySprite;
+        _itemView.item = itemCopy.copyItem;
     }
 
     private void PutItem(int count)
@@ -77,7 +72,7 @@ public class CatchItemView : BaseView
 
     private void GetImg(Sprite img)
     {
-        _itemView?.SetImg(img);
+        _itemView.SetImg(img);
     }
 
     public override void AfterClose()
@@ -87,7 +82,6 @@ public class CatchItemView : BaseView
 
     public override void Release()
     {
-        _itemView = null;
         transform.localPosition = new Vector3(-2100, -1300, 0);
     }
 }

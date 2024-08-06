@@ -457,7 +457,7 @@ GameObject:
   - component: {fileID: 97906864}
   m_Layer: 5
   m_HasEditorInfo: 1
-  m_Name: Name Sort Desc
+  m_Name: NameSortDesc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -527,19 +527,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 97906865}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 615485320}
-        m_TargetAssemblyTypeName: View.InventoryView, Assembly-CSharp
-        m_MethodName: SortByName
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &97906865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1871,7 +1859,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8598a7bb0ad44582b8605816b0c1246b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollRect: {fileID: 0}
 --- !u!1 &622844824
 GameObject:
   m_ObjectHideFlags: 0
@@ -4232,7 +4219,7 @@ GameObject:
   - component: {fileID: 1537915600}
   m_Layer: 5
   m_HasEditorInfo: 1
-  m_Name: Count Sort Desc
+  m_Name: CountSortDesc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4302,19 +4289,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1537915601}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 615485320}
-        m_TargetAssemblyTypeName: View.InventoryView, Assembly-CSharp
-        m_MethodName: SortByCount
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1537915601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5277,7 +5252,7 @@ GameObject:
   - component: {fileID: 1817732434}
   m_Layer: 5
   m_HasEditorInfo: 1
-  m_Name: Name Sort Asc
+  m_Name: NameSortAsc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5347,19 +5322,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1817732435}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 615485320}
-        m_TargetAssemblyTypeName: View.InventoryView, Assembly-CSharp
-        m_MethodName: SortByName
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1817732435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5548,7 +5511,7 @@ GameObject:
   - component: {fileID: 1912828047}
   m_Layer: 5
   m_HasEditorInfo: 1
-  m_Name: 'Count Sort Asc '
+  m_Name: CountSortAsc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5618,19 +5581,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1912828048}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 615485320}
-        m_TargetAssemblyTypeName: View.InventoryView, Assembly-CSharp
-        m_MethodName: SortByCount
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1912828048
 MonoBehaviour:
   m_ObjectHideFlags: 0

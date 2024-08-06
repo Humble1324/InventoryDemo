@@ -44,12 +44,8 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void ClearItem()
     {
-        if (ItemView)
-        {
-            hasItem = false;
-            ItemView.Clear();
-            ItemView.SetPos(Vector3.zero);
-        }
+        Release();
+
     }
 
     private void UpdateItem()
@@ -71,8 +67,11 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (ItemView is null || !InventoryController.Instance.onPick)
+        if (ItemView is null || InventoryController.Instance.onPick)
+        {
             return;
+        }
+
         //print(itemView.item.description);
         InventoryController.Instance.ShowToolTip(ItemView.item.description);
     }
@@ -94,20 +93,23 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
             return;
         }
 
+        InventoryController.Instance.HideToolTip();
         if (invCtr.onPick == false && ItemView)
         {
-            if (invCtr.PickItem(ItemView))
+            if (invCtr.PickItem(new ItemCopy(ItemView.sprite,ItemView.Count,ItemView.item)))
             {
                 Release();
             }
         }
-        else if (invCtr.onPick && ItemView is null)
+        else if (invCtr.onPick && !hasItem)
         {
-            PutItem(invCtr.PutItem(out var count).item, count);
+            PutItem(invCtr.PutItem(out var count), count);
         }
-        else if (invCtr.onPick && ItemView)
+        else if (invCtr.onPick && hasItem)
         {
-            ItemView.ExchangeItem(invCtr.OnPickItemView);
+            var temp = invCtr.OnPickItemCopy;
+            print("On ExChange"+temp.copySprite);
+            invCtr.PickItem(ItemView.ExchangeItem(temp));
         }
 
 

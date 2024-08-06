@@ -16,7 +16,7 @@ namespace Controller
         public Action<string> showToolTip;
         public Action hideToolTip;
 
-        public Action<ItemView, int> pickItemAction;
+        public Action<ItemCopy, int> pickItemAction;
         public Action<int> putItemAction;
         private Dictionary<string, Sprite> _spriteCache = new(15);
 
@@ -25,7 +25,7 @@ namespace Controller
         /// </summary>
         public bool onPick { get; private set; }
 
-        public ItemView OnPickItemView { get; private set; }
+        public ItemCopy OnPickItemCopy { get; private set; }
 
         public override void Awake()
         {
@@ -135,27 +135,28 @@ namespace Controller
 
         #region View调用显示
 
-        public bool PickItem(ItemView itemView)
+        public bool PickItem(ItemCopy itemCopy)
         {
-            if (onPick == true)
-            {
-                return false;
-            }
+            // if (onPick == true)
+            // {
+            //     
+            //     return false;
+            // }
 
             onPick = true;
-            OnPickItemView = itemView;
+            OnPickItemCopy = new ItemCopy(itemCopy);
             //print($"PickItem{item.name}");
-            pickItemAction?.Invoke(OnPickItemView, _pim.Items[OnPickItemView.item]);
+            pickItemAction?.Invoke(OnPickItemCopy,OnPickItemCopy.copyCount);
             return pickItemAction != null;
         }
 
-        public ItemView PutItem(out int count)
+        public Item PutItem(out int count)
         {
             onPick = false;
             count = -1;
-            count = _pim.Items[OnPickItemView.item];
+            count = _pim.Items[OnPickItemCopy.copyItem];
             putItemAction?.Invoke(count);
-            return OnPickItemView;
+            return OnPickItemCopy.copyItem;
         }
 
         public void ShowToolTip(string text)

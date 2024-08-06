@@ -63,15 +63,12 @@ public class ItemView : MonoBehaviour
         this.Count = count;
     }
 
-    public void ExchangeItem(ItemView changeItemView)
+    public ItemCopy ExchangeItem(ItemCopy changeItemView)
     {
-        var temp = this;
-        this.item = changeItemView.item;
-        this._image.sprite = changeItemView._image.sprite;
-        this.Count = changeItemView.Count;
-        changeItemView.item = temp.item;
-        changeItemView._image.sprite = temp._image.sprite;
-        changeItemView.Count = temp._count;
+        (item, changeItemView.copyItem) = (changeItemView.copyItem, item);
+        (_image.sprite, changeItemView.copySprite) = (changeItemView.copySprite, _image.sprite);
+        (Count, changeItemView.copyCount) = (Count, changeItemView.copyCount);
+        return changeItemView;
     }
 
     public void Clear()
@@ -146,5 +143,12 @@ public class ItemCopy
         copySprite = sprite;
         copyCount = count;
         copyItem = new Item(item);
+    }
+
+    public ItemCopy(ItemCopy itemCopy)
+    {
+        copySprite = itemCopy.copySprite;
+        copyCount = itemCopy.copyCount;
+        copyItem = new Item(itemCopy.copyItem);
     }
 }
