@@ -18,8 +18,8 @@ namespace Controller
 
         public Action<ItemCopy, int> pickItemAction;
         public Action<int> putItemAction;
-        private Dictionary<string, Sprite> _spriteCache = new(15);
-
+        private readonly Dictionary<string, Sprite> _spriteCache = new(15);
+        private GameObject _inventoryView;
         /// <summary>
         /// 之后要加限定,很多判定要不在onPick才可以执行
         /// </summary>
@@ -30,21 +30,45 @@ namespace Controller
         public override void Awake()
         {
             base.Awake();
+            
+        }
+
+        private void Start()
+        {
             Init();
         }
 
+        #region 打开背包
+
+        public void OpenInventory()
+        {
+            if (_inventoryView)
+            {
+                _inventoryView.SetActive(true);
+            }
+            else
+            {
+                if (_pim)
+                {
+                    
+                }
+            }
+        }
+        #endregion
         #region 物品增删改查接口
 
         public void AddItem(string itemID)
         {
-            var item = _pim.GetItem(itemID);
-            _pim.AddItem(item);
+            _pim.AddItem(itemID);
         }
 
+        public Item GetItem(string itemID)
+        {
+            return _pim.GetItem(itemID);
+        }
         public void RemoveItem(string itemID)
         {
-            var item = _pim.GetItem(itemID);
-            _pim.RemoveItem(item);
+            _pim.RemoveItem(itemID);
         }
 
         public void ClearInventory()
@@ -59,7 +83,7 @@ namespace Controller
                 return;
             }
 
-            _pim.AddItem(_pim.GetRandomItem());
+            _pim.AddItem(_pim.GetRandomItem().id);
         }
 
         public void SavePlayerInventory()
@@ -89,7 +113,7 @@ namespace Controller
         /// 返回当前玩家的背包内容
         /// </summary>
         /// <returns>返回当前玩家的背包内容</returns>
-        public Dictionary<Item, int> ShowItems()
+        public Dictionary<string, int> ShowItems()
         {
             if (!_pim || _pim.Items.Count < 1)
             {
@@ -103,6 +127,7 @@ namespace Controller
         private void Init()
         {
             _pim = GameObject.FindObjectOfType<PlayerInventoryModel>();
+            //_pim.
             _pim.InitPlayerInventory();
         }
 
@@ -126,7 +151,7 @@ namespace Controller
                 {
                     Sprite sprite = request.asset as Sprite;
                     onLoad?.Invoke(sprite);
-                    _spriteCache.Add(spritePath, sprite);
+                    _spriteCache.TryAdd(spritePath, sprite);
                 }
             }
         }
@@ -154,7 +179,7 @@ namespace Controller
         {
             onPick = false;
             count = -1;
-            count = _pim.Items[OnPickItemCopy.copyItem];
+            count = _pim.Items[OnPickItemCopy.copyItem.id];
             putItemAction?.Invoke(count);
             return OnPickItemCopy.copyItem;
         }

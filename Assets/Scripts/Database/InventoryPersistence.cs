@@ -18,7 +18,7 @@ public class InventoryPersistence
         
         foreach (var keyValuePair in inventory.Items)
         {
-            c.TryAdd(keyValuePair.Key.id,keyValuePair.Value.ToString());
+            c.TryAdd(keyValuePair.Key,keyValuePair.Value.ToString());
         }
 
         
@@ -50,7 +50,7 @@ public class InventoryPersistence
             foreach (var c1 in t)
             {
                 if (c1.Key != "")
-                    returnPM.AddItem(dic[c1.Key]);
+                    returnPM.AddItem(c1.Key);
             }
 
             return returnPM;
