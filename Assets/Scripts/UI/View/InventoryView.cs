@@ -7,9 +7,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
-
+using Button = UnityEngine.UI.Button;
+using View;
 namespace View
 {
     public class InventoryView : BaseView
@@ -125,7 +125,7 @@ namespace View
                     FindEmptySlot(out index);
                 }
 
-                var item = _inventoryController.GetItem(kvp.Key);
+                var item = _inventoryController.FindItem(kvp.Key);
                 _slots[index].PutItem(item, kvp.Value);
             }
 

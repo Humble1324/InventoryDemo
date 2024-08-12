@@ -5,14 +5,14 @@ using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 using Model;
-using Tools;
+using Utils;
 
 
 public class InventoryPersistence
 {
     public static readonly string PlayerJsonPath = Application.dataPath + "/Resources/Json/player_inventory.json";
 
-    public static void SavePlayerInventory(PlayerInventoryModel inventory)
+    public static void SavePlayerInventory(InventoryModel inventory)
     {
         Dictionary<string, string> c = new Dictionary<string, string>();
         
@@ -29,7 +29,7 @@ public class InventoryPersistence
         PlayerPrefs.Save(); // 确保数据被写入
     }
 
-    public static PlayerInventoryModel LoadInventory()
+    public static InventoryModel LoadInventory()
     {
         //Debug.Log("LoadInventory");
         // 从文件中加载物品信息
@@ -37,7 +37,7 @@ public class InventoryPersistence
         if (json != "")
         {
             Debug.Log($"File.Exists{json}");
-            PlayerInventoryModel returnPM = new();
+            InventoryModel returnPM = new();
             // 将 JSON 字符串反序列化为字典
             var c = JsonUtility.FromJson<SerializableDictionary<string, string>>(json);
             var t = c.ToDictionary();

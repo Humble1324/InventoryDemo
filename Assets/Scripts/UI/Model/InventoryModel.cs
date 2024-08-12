@@ -1,20 +1,20 @@
-﻿// PlayerInventoryModel.cs
+﻿// InventoryModel.cs
 
+using System;
 using System.Collections.Generic;
 using Controller;
 using UnityEngine;
 
 namespace Model
 {
-    public class PlayerInventoryModel : BaseItemModel
+    public class InventoryModel : MonoBehaviour
     {
         public Dictionary<string, int> Items { get; private set; } = new();
-        
         public void AddItem(string item)
         {
             //可能改成容量上限
             Items.TryAdd(item, 0);
-            var capsItem = GetItem(item);
+            var capsItem = BaseItemModel.Instance.GetItem(item);
             var caps = capsItem.capacity;
             Items[item] += caps;
 
@@ -28,7 +28,7 @@ namespace Model
                 return;
             }
 
-            var nums = GetItem(item).capacity;
+            var nums = BaseItemModel.Instance.GetItem(item).capacity;
             if (Items[item] > nums)
             {
                 Items[item] -= nums;
@@ -49,7 +49,11 @@ namespace Model
                 InventoryController.Instance.updateBag?.Invoke();
             }
         }
-
+        
+        public int InventoryUsage()
+        {
+            return Items.Count;
+        }
         public bool HasItem(string item)
         {
             return Items.ContainsKey(item);

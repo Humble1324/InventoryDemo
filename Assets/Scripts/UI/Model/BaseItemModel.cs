@@ -20,7 +20,7 @@ namespace Model
 
         private void Init()
         {
-            print("BaseItemModel Init");
+            //print("BaseItemModel Init");
             var t = ItemLoader.LoadData();
             foreach (var item in t)
             {
