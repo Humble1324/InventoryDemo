@@ -67,7 +67,7 @@ public class ItemView : MonoBehaviour
     {
         (item, changeItemView.copyItem) = (changeItemView.copyItem, item);
         (_image.sprite, changeItemView.copySprite) = (changeItemView.copySprite, _image.sprite);
-        (Count, changeItemView.copyCount) = (Count, changeItemView.copyCount);
+        (Count, changeItemView.copyCount) = ( changeItemView.copyCount,Count);
         return changeItemView;
     }
 

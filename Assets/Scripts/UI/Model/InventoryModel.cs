@@ -21,11 +21,12 @@ namespace Model
             UpdateItem();
         }
 
-        public void RemoveItem(string item)
+        public bool RemoveItem(string item)
         {
             if (!HasItem(item))
             {
-                return;
+                print("Has not Item");
+                return false;
             }
 
             var nums = BaseItemModel.Instance.GetItem(item).capacity;
@@ -37,8 +38,9 @@ namespace Model
             {
                 Items.Remove(item);
             }
-
+            Debug.Log("Item Removed");
             UpdateItem();
+            return true;
         }
 
         public void UpdateItem()

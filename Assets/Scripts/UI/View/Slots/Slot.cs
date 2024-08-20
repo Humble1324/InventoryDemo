@@ -117,18 +117,34 @@ namespace View
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                if (!hasItem) return;
+                if (!hasItem)
+                {
+                    return;
+                }
+
                 var equipCtrl = EquipmentController.Instance;
-                if (equipCtrl != null && equipCtrl.TryEquipItems(new ItemCopy(ItemView.sprite, ItemView.Count,
+                if (equipCtrl == null)
+                {
+                    return;
+                }
+
+                //成功装备再回来清除物品栏
+                if (equipCtrl.TryEquipItems(new ItemCopy(ItemView.sprite, ItemView.Count,
                         ItemView.item)))
                 {
-                    Release();
+                    print("Item Name"+ItemView.item.name);
+                    invCtr.TryRemoveItem(ItemView.item.id);
+                    Release(); //没去系统库删除背包
+                    invCtr.updateBag?.Invoke();
                 }
             }
             //  throw new System.NotImplementedException();
         }
 
-        private void Release()
+        /// <summary>
+        /// 显示层面清除物品
+        /// </summary>
+        public void Release()
         {
             hasItem = false;
             ItemView = null;

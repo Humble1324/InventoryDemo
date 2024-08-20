@@ -13,6 +13,8 @@ namespace Character
                 return InventoryController.Instance.InventoryUsage();
             }
         }
+
+
         public void FixedUpdate()
         {
             if (Input.GetKey(KeyCode.B))

@@ -44,7 +44,8 @@ namespace View
         private Button _btnNameSortDesc;
         private Button _btnCountSortAsc;
         private Button _btnCountSortDesc;
-
+        private Button _btnEquipmentShow;
+        [SerializeField]private EquipmentView _equipmentView;
         #endregion
         public override void Init()
         {
@@ -54,7 +55,8 @@ namespace View
             _btnCountSortAsc = GameObject.Find("CountSortAsc")?.GetComponent<Button>();
             _btnNameSortAsc = GameObject.Find("NameSortAsc")?.GetComponent<Button>();
             _btnNameSortDesc = GameObject.Find("NameSortDesc")?.GetComponent<Button>();
-
+            _btnEquipmentShow = GameObject.Find("EquipmentBtn")?.GetComponent<Button>();
+           
 
             if (!_scrollRect || !_btnCountSortDesc || !_btnCountSortAsc || !_btnNameSortAsc || !_btnNameSortDesc ||
                 !_inventoryController)
@@ -78,7 +80,12 @@ namespace View
             _btnCountSortAsc.onClick.AddListener((() => SortByCount(true)));
             _btnNameSortAsc.onClick.AddListener((() => SortByName(true)));
             _btnNameSortDesc.onClick.AddListener((() => SortByName(false)));
-            
+            if (_btnEquipmentShow != null)
+                _btnEquipmentShow.onClick.AddListener((() =>
+                {
+                    _equipmentView.gameObject.SetActive(!_equipmentView.gameObject.activeSelf);
+                    EquipmentController.Instance.updateView?.Invoke();
+                }));
         }
 
         /// <summary>
@@ -306,6 +313,7 @@ namespace View
             _btnCountSortAsc.onClick.RemoveAllListeners();
             _btnNameSortAsc.onClick.RemoveAllListeners();
             _btnNameSortDesc.onClick.RemoveAllListeners();
+            _btnEquipmentShow.onClick.RemoveAllListeners();
         }
     }
 }

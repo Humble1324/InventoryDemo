@@ -66,9 +66,9 @@ namespace Controller
             return BaseItemModel.Instance.GetItem(itemID);
         }
 
-        public void RemoveItem(string itemID)
+        public bool TryRemoveItem(string itemID)
         {
-            _pim.RemoveItem(itemID);
+           return _pim.RemoveItem(itemID);
         }
 
         public int InventoryUsage()
@@ -137,9 +137,11 @@ namespace Controller
 
         private void Init()
         {
-            _pim = FindObjectOfType<InventoryModel>();
+
             //_pim.
             _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+            _pim = _canvas.gameObject.AddComponent<InventoryModel>();
+
             _pim.InitPlayerInventory();
         }
 

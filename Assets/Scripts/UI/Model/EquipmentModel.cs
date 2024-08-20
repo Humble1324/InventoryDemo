@@ -30,6 +30,7 @@ namespace Model
             if(!Equipments.TryGetValue((EquipType)item.equipType, out var tItem))
             {
                 Equipments[(EquipType)item.equipType] = item;
+                //Debug.Log("EquipItem Success!");
                 UpdateView();
                 return true;
             }
@@ -60,6 +61,7 @@ namespace Model
             if (!Weapons.TryGetValue((WeaponType)item.weaponType,out var tWeapon) )
             {
                 Weapons[(WeaponType)item.weaponType] = item;
+                //Debug.Log("EquipWeapon Success!");
                 UpdateView();
                 return true;
             }
@@ -72,8 +74,8 @@ namespace Model
 
             return false;
         }
-
-        public Item UnEquipItem(EquipType equipType)
+ 
+        public Item UnEquipItem(EquipType equipType)     
         {
             if (!Equipments.TryGetValue(equipType, out var item) || item == null)
             {
@@ -81,7 +83,8 @@ namespace Model
                 return null;
             }
             var t = new Item(item);
-            Equipments[equipType] = null;
+            Equipments.Remove(equipType);
+            UpdateView();
             return t;
         }
 
@@ -93,13 +96,22 @@ namespace Model
                 return null;
             }
             var t = new Item(item);
-            Weapons[weaponType] = null;
+            Weapons.Remove(weaponType);;
+            UpdateView();
             return t;
+        }
+
+        public void Init()
+        {
+            var t = EquipmentPersistence.LoadEquipment();
+            Equipments = t.Equipments;
+            Weapons = t.Weapons;
+            UpdateView();
         }
 
         private void UpdateView()
         {
-            EquipmentController.Instance.UpdateView?.Invoke();
+            EquipmentController.Instance.updateView?.Invoke();
         }
     }
 }
