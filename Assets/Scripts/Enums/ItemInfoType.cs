@@ -20,22 +20,26 @@
 
     public enum WeaponType
     {
+        None = -1,
         MainHand = 1,
         OffHand = 2,
     }
 
+    /// <summary>
+    /// 装备分类
+    /// </summary>
     public enum EquipType
     {
-        None=-1,
-        Chest = 1,
-        Belt = 2,
-        Boots = 3,
-        Bracer = 4,
-        OffHand = 5,
-        Head = 6,
-        Neck = 7,
-        Ring = 8,
-        Leg = 9,
-        Shoulder = 10
+        None = -1,
+        Head = 1,
+        Neck = 2,
+        Chest = 3,
+        Belt = 4,
+        Leg = 5,
+        Boots = 6,
+        Ring = 7,
+        Shoulder = 8,
+        OffHand = 9,
+        Bracer = 10
     }
 }

@@ -49,43 +49,7 @@ public class Item
     }
 
 
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            int hash = 97; // 初始值为97
-            hash = hash * 83 + (id != null ? id.GetHashCode() : 0);
-            hash = hash * 83 + (name != null ? name.GetHashCode() : 0);
-            hash = hash * 83 + type.GetHashCode();
-            hash = hash * 83 + quality.GetHashCode();
-            hash = hash * 83 + (description != null ? description.GetHashCode() : 0);
-            hash = hash * 83 + capacity.GetHashCode();
-            hash = hash * 83 + buyPrice.GetHashCode();
-            hash = hash * 83 + sellPrice.GetHashCode();
-            hash = hash * 83 + hp.GetHashCode();
-            hash = hash * 83 + mp.GetHashCode();
-            hash = hash * 83 + (sprite != null ? sprite.GetHashCode() : 0);
-            hash = hash * 83 + strength.GetHashCode();
-            hash = hash * 83 + intellect.GetHashCode();
-            hash = hash * 83 + agility.GetHashCode();
-            hash = hash * 83 + stamina.GetHashCode();
-            hash = hash * 83 + equipType.GetHashCode();
-            hash = hash * 83 + damage.GetHashCode();
-            hash = hash * 83 + weaponType.GetHashCode();
-            return hash;
-        }
-    }
 
-    public override bool Equals(object obj)
-    {
-        if (obj == null || GetType() != obj.GetType())
-        {
-            return false;
-        }
-
-        Item other = (Item)obj;
-        return name == other.name && id == other.id;
-    }
 }
 
 public class ItemLoader : ExcelDataLoaderBase

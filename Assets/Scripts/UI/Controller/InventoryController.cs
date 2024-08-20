@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Model;
 using UnityEngine;
-using Tools;
+using Utils;
 using UnityEngine.Serialization;
 
 namespace Controller
 {
     public class InventoryController : Singleton<InventoryController>
     {
-        [SerializeField] private PlayerInventoryModel _pim;
+        [SerializeField] private InventoryModel _pim;
         public Action updateBag;
 
         public Action<string> showToolTip;
@@ -18,7 +18,9 @@ namespace Controller
 
         public Action<ItemCopy, int> pickItemAction;
         public Action<int> putItemAction;
-        private Dictionary<string, Sprite> _spriteCache = new(15);
+        private readonly Dictionary<string, Sprite> _spriteCache = new(15);
+        private GameObject _inventoryView;
+        private Canvas _canvas;
 
         /// <summary>
         /// 之后要加限定,很多判定要不在onPick才可以执行
@@ -33,20 +35,51 @@ namespace Controller
             Init();
         }
 
+
+        #region 打开背包
+
+        public void OpenInventory(string path)
+        {
+            if (_inventoryView)
+            {
+                _inventoryView.SetActive(true);
+            }
+            else
+            {
+                if (_pim)
+                {
+                    _inventoryView=Instantiate(_pim.LoadResource(path),_canvas.transform);
+                }
+            }
+        }
+
+        #endregion
         #region 物品增删改查接口
 
         public void AddItem(string itemID)
-        {
-            var item = _pim.GetItem(itemID);
-            _pim.AddItem(item);
+        { 
+            _pim.AddItem(itemID);
         }
 
-        public void RemoveItem(string itemID)
+        public Item FindItem(string itemID)
         {
-            var item = _pim.GetItem(itemID);
-            _pim.RemoveItem(item);
+            return BaseItemModel.Instance.GetItem(itemID);
         }
 
+        public bool TryRemoveItem(string itemID)
+        {
+           return _pim.RemoveItem(itemID);
+        }
+
+        public int InventoryUsage()
+        {
+            if (_pim)
+            {
+                return _pim.InventoryUsage();
+            }
+
+            return -1;
+        }
         public void ClearInventory()
         {
             _pim.ClearInventory();
@@ -59,7 +92,7 @@ namespace Controller
                 return;
             }
 
-            _pim.AddItem(_pim.GetRandomItem());
+            _pim.AddItem(BaseItemModel.Instance.GetRandomItem().id);
         }
 
         public void SavePlayerInventory()
@@ -80,16 +113,18 @@ namespace Controller
             }
         }
 
-        public void ShowImg(string itemSpritePath, Action<Sprite> onSpriteLoaded)
-        {
-            StartCoroutine(LoadImg(itemSpritePath, onSpriteLoaded));
-        }
+
+        // 废弃方法,现在用ResourceManager
+        // public void ShowImg(string itemSpritePath, Action<Sprite> onSpriteLoaded)
+        // {
+        //     StartCoroutine(LoadImg(itemSpritePath, onSpriteLoaded));
+        // }
 
         /// <summary>
         /// 返回当前玩家的背包内容
         /// </summary>
         /// <returns>返回当前玩家的背包内容</returns>
-        public Dictionary<Item, int> ShowItems()
+        public Dictionary<string, int> ShowItems()
         {
             if (!_pim || _pim.Items.Count < 1)
             {
@@ -102,7 +137,11 @@ namespace Controller
 
         private void Init()
         {
-            _pim = GameObject.FindObjectOfType<PlayerInventoryModel>();
+
+            //_pim.
+            _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+            _pim = _canvas.gameObject.AddComponent<InventoryModel>();
+
             _pim.InitPlayerInventory();
         }
 
@@ -126,7 +165,7 @@ namespace Controller
                 {
                     Sprite sprite = request.asset as Sprite;
                     onLoad?.Invoke(sprite);
-                    _spriteCache.Add(spritePath, sprite);
+                    _spriteCache.TryAdd(spritePath, sprite);
                 }
             }
         }
@@ -135,6 +174,7 @@ namespace Controller
 
         #region View调用显示
 
+        
         public bool PickItem(ItemCopy itemCopy)
         {
             // if (onPick == true)
@@ -142,11 +182,10 @@ namespace Controller
             //     
             //     return false;
             // }
-
             onPick = true;
             OnPickItemCopy = new ItemCopy(itemCopy);
             //print($"PickItem{item.name}");
-            pickItemAction?.Invoke(OnPickItemCopy,OnPickItemCopy.copyCount);
+            pickItemAction?.Invoke(OnPickItemCopy, OnPickItemCopy.copyCount);
             return pickItemAction != null;
         }
 
@@ -154,7 +193,7 @@ namespace Controller
         {
             onPick = false;
             count = -1;
-            count = _pim.Items[OnPickItemCopy.copyItem];
+            count = _pim.Items[OnPickItemCopy.copyItem.id];
             putItemAction?.Invoke(count);
             return OnPickItemCopy.copyItem;
         }

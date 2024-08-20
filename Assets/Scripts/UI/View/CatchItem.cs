@@ -5,11 +5,14 @@ using Controller;
 using UnityEngine;
 using View;
 
-public class CatchItemView : BaseView
+public class CatchItem : BaseView
 {
     private InventoryController _inventoryController;
     private ItemView _itemView;
     private Canvas _canvas;
+    
+
+    public override string prefabPath { get; }
 
     public override void Init()
     {

@@ -6,14 +6,17 @@ using TMPro;
 using UnityEngine;
 using View;
 
-public class ToolTipView : BaseView
+public class ToolTip : BaseView
 {
+    
     // Start is called before the first frame update
     private TextMeshProUGUI text;
     private CanvasGroup _canvasGroup;
     private bool _onShow = false;
     private Canvas _canvas;
     private InventoryController _inventoryController;
+
+    public override string prefabPath { get; }
 
     public override void Init()
     {

@@ -7,22 +7,28 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using Button = UnityEngine.UI.Button;
 using Image = UnityEngine.UI.Image;
-
+using Button = UnityEngine.UI.Button;
+using View;
 namespace View
 {
     public class InventoryView : BaseView
     {
         #region Define
-
+        public override string prefabPath
+        {
+            get
+            {
+                return "Prefabs/Inventory";
+            }//坑
+        }
         private InventoryController _inventoryController;
         private ScrollRect _scrollRect;
 
         /// <summary>
         /// 记录玩家物品,int为物品数量
         /// </summary>
-        private Dictionary<Item, int> _itemDic = new Dictionary<Item, int>();
+        private Dictionary<string, int> _itemDic = new Dictionary<string, int>();
 
         // /// <summary>
         // /// 物品对应单元格
@@ -38,7 +44,8 @@ namespace View
         private Button _btnNameSortDesc;
         private Button _btnCountSortAsc;
         private Button _btnCountSortDesc;
-
+        private Button _btnEquipmentShow;
+        [SerializeField]private EquipmentView _equipmentView;
         #endregion
         public override void Init()
         {
@@ -48,7 +55,8 @@ namespace View
             _btnCountSortAsc = GameObject.Find("CountSortAsc")?.GetComponent<Button>();
             _btnNameSortAsc = GameObject.Find("NameSortAsc")?.GetComponent<Button>();
             _btnNameSortDesc = GameObject.Find("NameSortDesc")?.GetComponent<Button>();
-
+            _btnEquipmentShow = GameObject.Find("EquipmentBtn")?.GetComponent<Button>();
+           
 
             if (!_scrollRect || !_btnCountSortDesc || !_btnCountSortAsc || !_btnNameSortAsc || !_btnNameSortDesc ||
                 !_inventoryController)
@@ -72,6 +80,12 @@ namespace View
             _btnCountSortAsc.onClick.AddListener((() => SortByCount(true)));
             _btnNameSortAsc.onClick.AddListener((() => SortByName(true)));
             _btnNameSortDesc.onClick.AddListener((() => SortByName(false)));
+            if (_btnEquipmentShow != null)
+                _btnEquipmentShow.onClick.AddListener((() =>
+                {
+                    _equipmentView.gameObject.SetActive(!_equipmentView.gameObject.activeSelf);
+                    EquipmentController.Instance.updateView?.Invoke();
+                }));
         }
 
         /// <summary>
@@ -112,13 +126,14 @@ namespace View
             foreach (var kvp in _itemDic)
             {
                 int index = -1;
-                FindSlot(kvp.Key.id, out index);
+                FindSlot(kvp.Key, out index);
                 if (index == -1)
                 {
                     FindEmptySlot(out index);
                 }
 
-                _slots[index].PutItem(kvp.Key, kvp.Value);
+                var item = _inventoryController.FindItem(kvp.Key);
+                _slots[index].PutItem(item, kvp.Value);
             }
 
             //print("Update View" + _itemDic.Count);
@@ -214,7 +229,8 @@ namespace View
             for (int i = 0; i < temp.Count; i++)
             {
                 // Check if item in temp[i] matches te mpItemView
-                _slots[i].PutItem(t[i].copyItem, _itemDic[t[i].copyItem]);
+                
+                _slots[i].PutItem(t[i].copyItem, _itemDic[t[i].copyItem.id]);
             }
         }
 
@@ -251,7 +267,7 @@ namespace View
             for (int i = 0; i < temp.Count; i++)
             {
                 // Check if item in temp[i] matches te mpItemView
-                _slots[i].PutItem(t[i].copyItem, _itemDic[t[i].copyItem]);
+                _slots[i].PutItem(t[i].copyItem, _itemDic[t[i].copyItem.id]);
             }
         }
 
@@ -297,6 +313,7 @@ namespace View
             _btnCountSortAsc.onClick.RemoveAllListeners();
             _btnNameSortAsc.onClick.RemoveAllListeners();
             _btnNameSortDesc.onClick.RemoveAllListeners();
+            _btnEquipmentShow.onClick.RemoveAllListeners();
         }
     }
 }

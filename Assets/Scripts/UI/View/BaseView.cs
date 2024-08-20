@@ -5,6 +5,10 @@ namespace View
 {
     public abstract class BaseView : MonoBehaviour, IView
     {
+        public abstract string prefabPath
+        {
+            get;
+        }
         private void Awake()
         {
             Init();
