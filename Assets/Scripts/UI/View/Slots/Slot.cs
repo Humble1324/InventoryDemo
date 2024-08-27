@@ -22,11 +22,11 @@ namespace View
 
         public int ItemCapacity => ItemView != null ? ItemView.item.capacity : -1;
 
-        public bool hasItem { get; private set; }
+        public bool HasItem { get; private set; }
 
         public virtual void PutItem(Item item, int count = 1)
         {
-            //print("On PutItem" + item.name);
+            // print("On PutItem" + item.name+" on "+transform.name);
             if (ItemView == null)
             {
                 var itemObj = Instantiate(itemPrefab, transform);
@@ -35,7 +35,7 @@ namespace View
 
             ItemView.item = item;
             ItemView.Count = count;
-            hasItem = true;
+            HasItem = true;
             UpdateItem();
         }
 
@@ -87,7 +87,7 @@ namespace View
 
         public virtual void OnPointerDown(PointerEventData eventData)
         {
-            print("OnPointerDown");
+            //print("OnPointerDown");
             var invCtr = InventoryController.Instance;
             if (invCtr is null)
             {
@@ -104,20 +104,27 @@ namespace View
                         Release();
                     }
                 }
-                else if (invCtr.onPick && !hasItem)
+                else if (invCtr.onPick && !HasItem)
                 {
                     PutItem(invCtr.PutItem(out var count), count);
                 }
-                else if (invCtr.onPick && hasItem)
+                else if (invCtr.onPick && HasItem)
                 {
                     var temp = invCtr.OnPickItemCopy;
-                    print("On ExChange" + temp.copySprite);
-                    invCtr.PickItem(ItemView.ExchangeItem(temp));
+                    if (temp.copyItem.id == ItemView.item.id)
+                    {
+                        invCtr.AddItem(temp.copyItem.id);
+                    }
+                    else
+                    {
+                        print("On ExChange" + temp.copySprite);
+                        invCtr.PickItem(ItemView.ExchangeItem(temp));
+                    }
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                if (!hasItem)
+                if (!HasItem)
                 {
                     return;
                 }
@@ -125,15 +132,23 @@ namespace View
                 var equipCtrl = EquipmentController.Instance;
                 if (equipCtrl == null)
                 {
+                    Debug.Log("EquipCtrl is null");
                     return;
                 }
 
+                if (ItemView.item is null)
+                {
+                    Debug.Log("Has not Item!");
+                    return;
+                }
+
+                var tempItem = new Item(ItemView.item);
                 //成功装备再回来清除物品栏
                 if (equipCtrl.TryEquipItems(new ItemCopy(ItemView.sprite, ItemView.Count,
                         ItemView.item)))
                 {
-                    print("Item Name"+ItemView.item.name);
-                    invCtr.TryRemoveItem(ItemView.item.id);
+                    print("Equip Item Name" + tempItem.name);
+                    invCtr.TryRemoveItem(tempItem.id);
                     Release(); //没去系统库删除背包
                     invCtr.updateBag?.Invoke();
                 }
@@ -146,7 +161,7 @@ namespace View
         /// </summary>
         public void Release()
         {
-            hasItem = false;
+            HasItem = false;
             ItemView = null;
             for (int i = 0; i < transform.childCount; i++)
             {

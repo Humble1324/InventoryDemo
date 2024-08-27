@@ -6,6 +6,10 @@ namespace Utils
 {
     public class ResourceManager : Singleton<ResourceManager>
     {
+        public GameObject LoadResource(string path)
+        {
+            return (GameObject)Resources.Load(path);
+        }
         public void GetAssetCache<T>(string assetPath, Action<T> onLoad) where T : UnityEngine.Object
         {
 #if UNITY_EDITOR

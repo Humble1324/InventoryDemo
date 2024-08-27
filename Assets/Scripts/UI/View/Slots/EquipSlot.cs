@@ -15,23 +15,49 @@ namespace View
             base.PutItem(item, count);
             ItemView.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
         }
-        
-        
+
 
         public override void OnPointerDown(PointerEventData eventData)
         {
             if (ItemView is null) return;
+
+
+            var invCtr = InventoryController.Instance;
+            var equCtr = EquipmentController.Instance;
+            if (invCtr is null || equCtr is null)
+            {
+                return;
+            }
+
+            // if (eventData.button == PointerEventData.InputButton.Left)
+            // {
+            //     if (invCtr.onPick == false && ItemView)
+            //     {
+            //         if (invCtr.PickItem(new ItemCopy(ItemView.sprite, ItemView.Count, ItemView.item)))
+            //         {
+            //             Release();
+            //         }
+            //     }
+            //     else if (invCtr.onPick && !HasItem)
+            //     {
+            //         if ((WeaponType)invCtr.OnPickItemCopy.copyItem.weaponType==weaponType
+            //             ||(EquipType)invCtr.OnPickItemCopy.copyItem.equipType==equipType)
+            //         {
+            //             PutItem(invCtr.PutItem(out var count), count);
+            //         }
+            //     }
+            //     else if (invCtr.onPick && HasItem) 
+            //     {
+            //         var temp = invCtr.OnPickItemCopy;
+            //         print("On ExChange" + temp.copySprite);
+            //         invCtr.PickItem(ItemView.ExchangeItem(temp));
+            //     }
+            // }
+
             if (eventData.button == PointerEventData.InputButton.Right)
             {
-                //因为装备只有一个 所以可以这样存
                 if (ItemView.item == null) return;
-                var invCtr = InventoryController.Instance;
-                var equCtr = EquipmentController.Instance;
-                if (invCtr is null || equCtr is null)
-                {
-                    return;
-                }
-            
+                //因为装备只有一个 所以可以这样存
                 invCtr.AddItem(ItemView.item.id);
                 invCtr.HideToolTip();
                 if (ItemView.item.weaponType == (int)WeaponType.None)

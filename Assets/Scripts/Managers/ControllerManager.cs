@@ -15,6 +15,7 @@ namespace Managers
 
         public InventoryController inventoryController;
         public EquipmentController equipmentController;
+        public ShopController shopController;
 
         #endregion
 
@@ -33,6 +34,7 @@ namespace Managers
         {
             _managers[typeof(InventoryController)] = Instance.inventoryController;
             _managers[typeof(EquipmentController)] = Instance.equipmentController;
+            _managers[typeof(ShopController)] = Instance.shopController;
         }
 
         #endregion

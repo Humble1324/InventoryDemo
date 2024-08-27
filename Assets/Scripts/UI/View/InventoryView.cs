@@ -147,7 +147,7 @@ namespace View
             }
         }
 
-        private void OnPutItem(int i)
+        private void OnPutItem(int count)
         {
             ChangeBtnInteractable(true);
         }
@@ -171,7 +171,7 @@ namespace View
             index = -1;
             for (var i = 0; i < _slots.Count; i++)
             {
-                if (!_slots[i].hasItem)
+                if (!_slots[i].HasItem)
                 {
                     index = i;
                     return _slots[i];
@@ -186,7 +186,7 @@ namespace View
             index = -1;
             for (var i = 0; i < _slots.Count; i++)
             {
-                if (_slots[i].hasItem && _slots[i].ItemID == id)
+                if (_slots[i].HasItem && _slots[i].ItemID == id)
                 {
                     index = i;
                     return _slots[i];
@@ -201,7 +201,7 @@ namespace View
             var temp = new List<Slot>();
             foreach (var slot in _slots)
             {
-                if (slot.hasItem)
+                if (slot.HasItem)
                 {
                     temp.Add(slot);
                 }
@@ -239,7 +239,7 @@ namespace View
             var temp = new List<Slot>();
             foreach (var slot in _slots)
             {
-                if (slot.hasItem)
+                if (slot.HasItem)
                 {
                     temp.Add(slot);
                 }
@@ -248,10 +248,10 @@ namespace View
             // 创建一个新的列表来存储排序后的 ItemView
             var sortedItemViews = isAsc
                 ? temp.Select(slot => slot.ItemView)
-                    .OrderBy(itemView => itemView.item.capacity)
+                    .OrderBy(itemView => itemView.Count)
                     .ToList()
                 : temp.Select(slot => slot.ItemView)
-                    .OrderByDescending(itemView => itemView.item.capacity)
+                    .OrderByDescending(itemView => itemView.Count)
                     .ToList();
             foreach (var slot in _slots)
             {
@@ -273,10 +273,7 @@ namespace View
 
         public override void AfterInit()
         {
-            if (_inventoryController)
-            {
-                _inventoryController.UpdateItems();
-            }
+            UpdateView();
         }
 
         public override void AfterShow()

@@ -12,10 +12,11 @@ namespace Controller
     {
         [SerializeField] private InventoryModel _pim;
         public Action updateBag;
-
+        public Action updateGold;
         public Action<string> showToolTip;
         public Action hideToolTip;
 
+        public int Gold => _pim.Gold;
         public Action<ItemCopy, int> pickItemAction;
         public Action<int> putItemAction;
         private readonly Dictionary<string, Sprite> _spriteCache = new(15);
@@ -48,16 +49,17 @@ namespace Controller
             {
                 if (_pim)
                 {
-                    _inventoryView=Instantiate(_pim.LoadResource(path),_canvas.transform);
+                    _inventoryView = Instantiate(ResourceManager.Instance.LoadResource(path), _canvas.transform);
                 }
             }
         }
 
         #endregion
+
         #region 物品增删改查接口
 
         public void AddItem(string itemID)
-        { 
+        {
             _pim.AddItem(itemID);
         }
 
@@ -66,9 +68,9 @@ namespace Controller
             return BaseItemModel.Instance.GetItem(itemID);
         }
 
-        public bool TryRemoveItem(string itemID)
+        public bool TryRemoveItem(string itemID, int count = -1)
         {
-           return _pim.RemoveItem(itemID);
+            return _pim.RemoveItem(itemID, count);
         }
 
         public int InventoryUsage()
@@ -80,9 +82,25 @@ namespace Controller
 
             return -1;
         }
+
         public void ClearInventory()
         {
             _pim.ClearInventory();
+        }
+
+        public bool TryChangeGoldLegal(int goldCount)
+        {
+            return Gold + goldCount > 0;
+        }
+
+        public bool TryAddGold(int count)
+        {
+            return _pim && _pim.TryAddGold(count);
+        }
+
+        public bool TrySpendGold(int count)
+        {
+            return _pim && _pim.TrySpendGold(count);
         }
 
         public void AddRandomItem()
@@ -137,11 +155,14 @@ namespace Controller
 
         private void Init()
         {
-
             //_pim.
-            _canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+            _canvas = GameObject.Find("Canvas")?.GetComponent<Canvas>();
+            if (_canvas == null)
+            {
+                Debug.LogError("_canvas is null");
+                return;
+            } 
             _pim = _canvas.gameObject.AddComponent<InventoryModel>();
-
             _pim.InitPlayerInventory();
         }
 
@@ -174,7 +195,6 @@ namespace Controller
 
         #region View调用显示
 
-        
         public bool PickItem(ItemCopy itemCopy)
         {
             // if (onPick == true)
@@ -193,7 +213,16 @@ namespace Controller
         {
             onPick = false;
             count = -1;
-            count = _pim.Items[OnPickItemCopy.copyItem.id];
+            if (_pim.Items.TryGetValue(OnPickItemCopy.copyItem.id, out var item))
+            {
+                count = item;
+            }
+            else
+            {
+                _pim.AddItem(OnPickItemCopy.copyItem.id);
+                count = OnPickItemCopy.copyCount;
+            }
+
             putItemAction?.Invoke(count);
             return OnPickItemCopy.copyItem;
         }

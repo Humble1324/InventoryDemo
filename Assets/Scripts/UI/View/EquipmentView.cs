@@ -55,6 +55,7 @@ namespace View
 
         public override void AfterInit()
         {
+            UpdateView();
         }
 
         private void UpdateView()
@@ -63,7 +64,7 @@ namespace View
             var tempEquips = _equipCtr.GetEquipItems();
             foreach (var equipSlot in _equipSlots)
             {
-                equipSlot.Release();
+                equipSlot.ClearItem();
             }
 
             CharacterInfo = new CharacterInfo();

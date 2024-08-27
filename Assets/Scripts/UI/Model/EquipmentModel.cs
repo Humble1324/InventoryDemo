@@ -27,21 +27,21 @@ namespace Model
                 return false;
             }
 
-            if(!Equipments.TryGetValue((EquipType)item.equipType, out var tItem))
+            if (!Equipments.TryGetValue((EquipType)item.equipType, out var tItem))
             {
                 Equipments[(EquipType)item.equipType] = item;
                 //Debug.Log("EquipItem Success!");
                 UpdateView();
                 return true;
             }
-            else
-            {   
-                InventoryController.Instance.AddItem(itemID);
+            {
+                InventoryController.Instance.AddItem(tItem.id);
                 //有装备要做替换
                 Equipments[(EquipType)item.equipType] = item;
+                return true;
             }
 
-            return false;
+
         }
 
         public bool EquipWeapon(string weaponID)
@@ -58,30 +58,30 @@ namespace Model
                 return false;
             }
 
-            if (!Weapons.TryGetValue((WeaponType)item.weaponType,out var tWeapon) )
+            if (!Weapons.TryGetValue((WeaponType)item.weaponType, out var tWeapon))
             {
                 Weapons[(WeaponType)item.weaponType] = item;
                 //Debug.Log("EquipWeapon Success!");
                 UpdateView();
                 return true;
             }
-            else
+
             {
                 //有装备要做替换
-                InventoryController.Instance.AddItem(weaponID);
+                InventoryController.Instance.AddItem(tWeapon.id);
                 Weapons[(WeaponType)item.weaponType] = item;
+                return true;
             }
-
-            return false;
         }
- 
-        public Item UnEquipItem(EquipType equipType)     
+
+        public Item UnEquipItem(EquipType equipType)
         {
             if (!Equipments.TryGetValue(equipType, out var item) || item == null)
             {
                 Debug.Log($"{equipType} hasn't Item");
                 return null;
             }
+
             var t = new Item(item);
             Equipments.Remove(equipType);
             UpdateView();
@@ -95,8 +95,10 @@ namespace Model
                 Debug.Log($"{weaponType} hasn't Item");
                 return null;
             }
+
             var t = new Item(item);
-            Weapons.Remove(weaponType);;
+            Weapons.Remove(weaponType);
+            ;
             UpdateView();
             return t;
         }

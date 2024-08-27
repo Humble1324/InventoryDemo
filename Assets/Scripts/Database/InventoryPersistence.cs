@@ -15,13 +15,14 @@ public class InventoryPersistence
     public static void SavePlayerInventory(InventoryModel inventory)
     {
         Dictionary<string, string> c = new Dictionary<string, string>();
-        
+
         foreach (var keyValuePair in inventory.Items)
         {
-            c.TryAdd(keyValuePair.Key,keyValuePair.Value.ToString());
+            c.TryAdd(keyValuePair.Key, keyValuePair.Value.ToString());
         }
 
-        
+        c.TryAdd("Gold", inventory.Gold.ToString());
+        //c.TryAdd("Gold", "9999");
         // 将物品信息保存到文件（例如，JSON格式）
         string json = JsonUtility.ToJson(new SerializableDictionary<string, string>(c));
         Debug.Log("Json:" + json);
@@ -42,15 +43,21 @@ public class InventoryPersistence
             var c = JsonUtility.FromJson<SerializableDictionary<string, string>>(json);
             var t = c.ToDictionary();
             var s = ItemLoader.LoadData();
-            var dic = new Dictionary<string, Item>();
-            foreach (var items in s)
-            {
-                dic.Add(items.id,items );
-            }
+            // var dic = new Dictionary<string, Item>();
+            // foreach (var items in s)
+            // {
+            //     dic.Add(items.id,items);
+            // }
             foreach (var c1 in t)
             {
                 if (c1.Key != "")
-                    returnPM.AddItem(c1.Key);
+                {
+                    if (c1.Key == "Gold")
+                    {
+                        returnPM.TryAddGold(int.Parse(c1.Value));
+                    }
+                    else returnPM.AddItem(c1.Key);
+                }
             }
 
             return returnPM;
