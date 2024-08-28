@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Character;
 using Controller;
+using Enums;
 using Managers;
 using Utils;
 using UnityEngine;
@@ -26,7 +28,7 @@ namespace View
 
         public virtual void PutItem(Item item, int count = 1)
         {
-            // print("On PutItem" + item.name+" on "+transform.name);
+            // print("On PutDownItem" + item.name+" on "+transform.name);
             if (ItemView == null)
             {
                 var itemObj = Instantiate(itemPrefab, transform);
@@ -97,33 +99,69 @@ namespace View
             InventoryController.Instance.HideToolTip();
             if (eventData.button == PointerEventData.InputButton.Left)
             {
+                var tempItemNumEnum = ItemNumEnums.Full;
+                if (Input.GetKey(KeyCode.LeftControl))
+                {
+                    tempItemNumEnum = ItemNumEnums.Half;
+                }
+                else if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    tempItemNumEnum = ItemNumEnums.Single;
+                }
+
                 if (invCtr.onPick == false && ItemView)
                 {
-                    if (invCtr.PickItem(new ItemCopy(ItemView.sprite, ItemView.Count, ItemView.item)))
+                    if (invCtr.PickItem(new ItemCopy(ItemView.sprite, ItemView.Count, ItemView.item),tempItemNumEnum,out var count))
                     {
                         Release();
+                    }
+                    else
+                    {
+                        ItemView.Count -= count;
                     }
                 }
                 else if (invCtr.onPick && !HasItem)
                 {
-                    PutItem(invCtr.PutItem(out var count), count);
+                    var temp = invCtr.PutDownItem(tempItemNumEnum, out var count);
+                    if (count > 0 && temp != null)
+                    {
+                        PutItem(temp, count);
+                    }
+                    //PutItem(invCtr.PutDownItem(tempItemNumEnum, out var count), count);
                 }
                 else if (invCtr.onPick && HasItem)
                 {
-                    var temp = invCtr.OnPickItemCopy;
-                    if (temp.copyItem.id == ItemView.item.id)
+                    var tempItemCopy = invCtr.OnPickItemCopy;
+                    if (tempItemCopy.copyItem.id == ItemView.item.id)
                     {
-                        invCtr.AddItem(temp.copyItem.id);
+                        var temp = invCtr.PutDownItem(tempItemNumEnum, out var count);
+                        
+                        if (count > 0 && temp != null)
+                        {
+                            ItemView.Count += count;
+                        }
+                        //invCtr.AddItem(temp.copyItem.id); //这是我写的????亏贼
                     }
                     else
                     {
-                        print("On ExChange" + temp.copySprite);
-                        invCtr.PickItem(ItemView.ExchangeItem(temp));
+                        print("On ExChange" + tempItemCopy.copySprite);
+                        invCtr.PickItem(ItemView.ExchangeItem(tempItemCopy),ItemNumEnums.None,out var count);
                     }
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
+                if (invCtr.onPick && !HasItem)
+                {
+                    var temp = invCtr.PutDownItem(ItemNumEnums.Single, out var count);
+                    if (count > 0 && temp != null)
+                    {
+                        PutItem(temp);
+                    }
+
+                    return;
+                }
+
                 if (!HasItem)
                 {
                     return;
@@ -148,7 +186,7 @@ namespace View
                         ItemView.item)))
                 {
                     print("Equip Item Name" + tempItem.name);
-                    invCtr.TryRemoveItem(tempItem.id);
+                    invCtr.TryRemoveItem(tempItem.id,1);
                     Release(); //没去系统库删除背包
                     invCtr.updateBag?.Invoke();
                 }

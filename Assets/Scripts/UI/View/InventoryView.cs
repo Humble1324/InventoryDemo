@@ -198,6 +198,7 @@ namespace View
 
         private void SortByName(bool isAsc)
         {
+            UpdateView();
             var temp = new List<Slot>();
             foreach (var slot in _slots)
             {
@@ -236,6 +237,7 @@ namespace View
 
         private void SortByCount(bool isAsc)
         {
+            UpdateView();
             var temp = new List<Slot>();
             foreach (var slot in _slots)
             {

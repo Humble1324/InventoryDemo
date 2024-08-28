@@ -14,7 +14,7 @@ namespace Model
             UpdateView();
             return ChangeItemStock(itemID, count, false);
 
-            return false;
+            //return false;
         }
 
 
@@ -24,7 +24,7 @@ namespace Model
             UpdateView();
             return ChangeItemStock(itemID, count, true);
 
-            return false;
+            //return false;
         }
 
         private void UpdateView()
@@ -37,10 +37,10 @@ namespace Model
         {
             //todo:文件初始化
             ShopItemsStock = new Dictionary<string, int>() { { "100001", 10 }, { "100002", 20 } };
-            foreach (var keyValuePair in ShopItemsStock)
-            {
-                Debug.Log($"{keyValuePair.Key}count{keyValuePair.Value}");
-            }
+            // foreach (var keyValuePair in ShopItemsStock)
+            // {
+            //     Debug.Log($"{keyValuePair.Key}count{keyValuePair.Value}");
+            // }
 
             UpdateView();
         }

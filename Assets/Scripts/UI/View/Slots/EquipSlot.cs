@@ -43,7 +43,7 @@ namespace View
             //         if ((WeaponType)invCtr.OnPickItemCopy.copyItem.weaponType==weaponType
             //             ||(EquipType)invCtr.OnPickItemCopy.copyItem.equipType==equipType)
             //         {
-            //             PutItem(invCtr.PutItem(out var count), count);
+            //             PutDownItem(invCtr.PutDownItem(out var count), count);
             //         }
             //     }
             //     else if (invCtr.onPick && HasItem) 

@@ -19,8 +19,8 @@ namespace Model
             var capsItem = BaseItemModel.Instance.GetItem(item);
             var caps = count == -1 ? capsItem.capacity : count;
             Items[item] += caps;
-            string temp = "";
-
+            
+            //string temp = "";
             // foreach (var keyValuePair in Items)
             // {
             //     temp += keyValuePair.Key + " ";
@@ -60,18 +60,15 @@ namespace Model
         {
             if (!HasItem(item))
             {
-                print("Has not Item");
+                print("Couldn't found Item");
                 return false;
             }
 
-            var nums = BaseItemModel.Instance.GetItem(item).capacity;
-            if (count >0)
+            //var nums = BaseItemModel.Instance.GetItem(item).capacity;
+
+            if (count !=-1&&Items[item] > count)
             {
-                nums *= count;
-            }
-            if (Items[item] > nums)
-            {
-                Items[item] -= nums;
+                Items[item] -= count;
             }
             else
             {

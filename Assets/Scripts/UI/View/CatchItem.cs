@@ -10,7 +10,7 @@ public class CatchItem : BaseView
     private InventoryController _inventoryController;
     private ItemView _itemView;
     private Canvas _canvas;
-    
+
 
     public override string prefabPath { get; }
 
@@ -70,7 +70,15 @@ public class CatchItem : BaseView
 
     private void PutItem(int count)
     {
-        Release();
+        if (count <= 0)
+        {
+            Release();
+            _inventoryController.onPick = false;
+        }
+        else
+        {
+            _itemView.Count = count;
+        }
     }
 
     private void GetImg(Sprite img)

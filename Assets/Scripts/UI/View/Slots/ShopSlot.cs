@@ -1,4 +1,5 @@
 ﻿using Controller;
+using Enums;
 using Model;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -46,16 +47,23 @@ namespace View
             {
                 if (invCtr.onPick)
                 {
-                   
-                    var tempItem = invCtr.PutItem(out var count);
-                    if (invCtr.TryRemoveItem(tempItem.id,count))
+                    //出售时调用 
+                    
+                    if (invCtr.OnPickItemCopy.copyItem.capacity > invCtr.OnPickItemCopy.copyCount)
+                    {
+                        Debug.Log("Minimum quantity not met~");
+                        return;
+                    }
+
+                    var tempItem = invCtr.PutDownItem(ItemNumEnums.Full, out var count);
+                    if (invCtr.TryRemoveItem(tempItem.id, count))
                     {
                         if (shopCtr.TrySellItems(tempItem.id, count))
                         {
                             Debug.Log($"Sell Item{tempItem.name} Success,item count:{count}");
                         }
                     }
-                    //PutItem(invCtr.PutItem(out var count), count);
+                    //PutDownItem(invCtr.PutDownItem(out var count), count);
                 }
             }
         }
