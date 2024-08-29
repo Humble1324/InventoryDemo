@@ -24,6 +24,11 @@ namespace Character
         {
             _goldTMP = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             
+           
+        }
+
+        public void Start()
+        {
             UpdateGoldCount();
         }
 
@@ -34,7 +39,8 @@ namespace Character
 
         public void OnDisable()
         {
-            InventoryController.Instance.updateGold -= UpdateGoldCount;        }
+            InventoryController.Instance.updateGold -= UpdateGoldCount;        
+        }
 
         private void UpdateGoldCount()
         {

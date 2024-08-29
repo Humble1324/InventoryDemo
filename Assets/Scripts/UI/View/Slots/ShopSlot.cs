@@ -26,7 +26,7 @@ namespace View
                     return;
                 }
 
-                invCtr.hideToolTip();
+                ToolTipManager.Instance.HideToolTip();
                 if (ItemView.item is null || !HasItem)
                 {
                     Debug.Log("Shop has not item ");
@@ -55,7 +55,7 @@ namespace View
                         return;
                     }
 
-                    var tempItem = invCtr.PutDownItem(ItemNumEnums.Full, out var count);
+                    var tempItem = invCtr.PutDownItem(ItemNumType.Full, out var count);
                     if (invCtr.TryRemoveItem(tempItem.id, count))
                     {
                         if (shopCtr.TrySellItems(tempItem.id, count))

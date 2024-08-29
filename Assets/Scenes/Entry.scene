@@ -1241,6 +1241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pim: {fileID: 0}
+  onPick: 0
 --- !u!4 &1289455234
 Transform:
   m_ObjectHideFlags: 0

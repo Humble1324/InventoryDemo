@@ -201,9 +201,9 @@ namespace Controller
         /// 取了多少物品,如果True就是全取完,False则有剩余
         /// </summary>
         /// <param name="itemCopy"></param>
-        /// <param name="itemNumEnums">取货方式</param>
+        /// <param name="itemNumType">取货方式</param>
         /// <returns></returns>
-        public bool PickItem(ItemCopy itemCopy, ItemNumEnums itemNumEnums, out int count)
+        public bool PickItem(ItemCopy itemCopy, ItemNumType itemNumType, out int count)
         {
             // if (onPick == true)
             // {
@@ -213,13 +213,13 @@ namespace Controller
             count = -1;
             onPick = true;
             OnPickItemCopy = new ItemCopy(itemCopy);
-            if (itemNumEnums == ItemNumEnums.None)
+            if (itemNumType == ItemNumType.None)
             {
                 pickItemAction?.Invoke(OnPickItemCopy, OnPickItemCopy.copyCount);
                 return true;
             }
 
-            count = ItemNumCountByEnum(itemCopy.copyCount, itemNumEnums);
+            count = ItemNumCountByEnum(itemCopy.copyCount, itemNumType);
             OnPickItemCopy.copyCount = count;
             //print($"PickItem{item.name}");
             pickItemAction?.Invoke(OnPickItemCopy, count);
@@ -229,14 +229,14 @@ namespace Controller
         /// <summary>
         /// 取出拎起的物品
         /// </summary>
-        /// <param name="itemNumEnums"></param>
+        /// <param name="itemNumType"></param>
         /// <param name="count">拎起的物品数量</param>
         /// <returns></returns>
-        public Item PutDownItem(ItemNumEnums itemNumEnums, out int count)
+        public Item PutDownItem(ItemNumType itemNumType, out int count)
         {
             //如果背包有相同物品
             //_pim.AddItem(OnPickItemCopy.copyItem.id);
-            count = ItemNumCountByEnum(OnPickItemCopy.copyCount, itemNumEnums);
+            count = ItemNumCountByEnum(OnPickItemCopy.copyCount, itemNumType);
 
             if (count > 0)
             {
@@ -249,40 +249,30 @@ namespace Controller
             return OnPickItemCopy.copyItem;
         }
 
-        private int ItemNumCountByEnum(int temp, ItemNumEnums itemNumEnums)
+        private int ItemNumCountByEnum(int temp, ItemNumType itemNumType)
         {
             int count = -1;
-            switch (itemNumEnums)
+            switch (itemNumType)
             {
-                case ItemNumEnums.None:
+                case ItemNumType.None:
                     return count;
-                case ItemNumEnums.Full:
+                case ItemNumType.Full:
                     count = OnPickItemCopy.copyCount;
                     break;
-                case ItemNumEnums.Half:
+                case ItemNumType.Half:
                     count = OnPickItemCopy.copyCount == 1 ? 1 : OnPickItemCopy.copyCount / 2;
                     break;
-                case ItemNumEnums.Single:
+                case ItemNumType.Single:
                     count = temp >= 1 ? 1 : -1;
                     break;
-                case ItemNumEnums.Double:
+                case ItemNumType.Double:
                     count = temp >= 2 ? 2 : -1;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(itemNumEnums), itemNumEnums, null);
+                    throw new ArgumentOutOfRangeException(nameof(itemNumType), itemNumType, null);
             }
 
             return count;
-        }
-
-        public void ShowToolTip(string text)
-        {
-            showToolTip?.Invoke(text);
-        }
-
-        public void HideToolTip()
-        {
-            hideToolTip?.Invoke();
         }
 
         #endregion

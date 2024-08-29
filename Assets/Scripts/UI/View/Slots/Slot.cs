@@ -76,14 +76,14 @@ namespace View
             }
 
             //print(itemView.item.description);
-            InventoryController.Instance.ShowToolTip(ItemView.item.description);
+            ToolTipManager.Instance.ShowToolTip(ItemView.item);
         }
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
             if (ItemView is null)
                 return;
-            InventoryController.Instance.HideToolTip();
+            ToolTipManager.Instance.HideToolTip();
             //  throw new System.NotImplementedException();
         }
 
@@ -96,17 +96,17 @@ namespace View
                 return;
             }
 
-            InventoryController.Instance.HideToolTip();
+            ToolTipManager.Instance.HideToolTip();
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                var tempItemNumEnum = ItemNumEnums.Full;
+                var tempItemNumEnum = ItemNumType.Full;
                 if (Input.GetKey(KeyCode.LeftControl))
                 {
-                    tempItemNumEnum = ItemNumEnums.Half;
+                    tempItemNumEnum = ItemNumType.Half;
                 }
                 else if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    tempItemNumEnum = ItemNumEnums.Single;
+                    tempItemNumEnum = ItemNumType.Single;
                 }
 
                 if (invCtr.onPick == false && ItemView)
@@ -145,7 +145,7 @@ namespace View
                     else
                     {
                         print("On ExChange" + tempItemCopy.copySprite);
-                        invCtr.PickItem(ItemView.ExchangeItem(tempItemCopy),ItemNumEnums.None,out var count);
+                        invCtr.PickItem(ItemView.ExchangeItem(tempItemCopy),ItemNumType.None,out var count);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace View
             {
                 if (invCtr.onPick && !HasItem)
                 {
-                    var temp = invCtr.PutDownItem(ItemNumEnums.Single, out var count);
+                    var temp = invCtr.PutDownItem(ItemNumType.Single, out var count);
                     if (count > 0 && temp != null)
                     {
                         PutItem(temp);

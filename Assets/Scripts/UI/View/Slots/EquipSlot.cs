@@ -2,13 +2,14 @@
 using Enums;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace View
 {
     public class EquipSlot : Slot
     {
-        public EquipType equipType = EquipType.None;
-        public WeaponType weaponType = WeaponType.None;
+        [FormerlySerializedAs("equipTypes")] public EquipType equipType = EquipType.None;
+        [FormerlySerializedAs("weaponTypes")] public WeaponType weaponType = WeaponType.None;
 
         public override void PutItem(Item item, int count = 1)
         {
@@ -16,6 +17,16 @@ namespace View
             ItemView.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
         }
 
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            if (ItemView is null || InventoryController.Instance.onPick)
+            {
+                return;
+            }
+
+            //print(itemView.item.description);
+            ToolTipManager.Instance.ShowToolTip(ItemView.item,ToolTipType.Equipment);
+        }
 
         public override void OnPointerDown(PointerEventData eventData)
         {
@@ -59,7 +70,7 @@ namespace View
                 if (ItemView.item == null) return;
                 //因为装备只有一个 所以可以这样存
                 invCtr.AddItem(ItemView.item.id);
-                invCtr.HideToolTip();
+                ToolTipManager.Instance.HideToolTip();
                 if (ItemView.item.weaponType == (int)WeaponType.None)
                 {
                     equCtr.RemoveEquipItems(ItemView.item.equipType, false);
